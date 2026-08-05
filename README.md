@@ -26,7 +26,7 @@ Module 4-8 examples are adapted from:
 
 ### Reinforcement Learning
 - **Module 9: Practical** - Basics of Reinforcement Learning
-- **Module 10** - Reinforcement Learning and LLM
+- **Module 10: Practical** - Reinforcement Learning and LLM
 
 ## ✨ Key Features
 

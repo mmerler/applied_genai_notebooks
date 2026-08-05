@@ -92,6 +92,9 @@ nav:
   - Module 9:
       - Practicals:
           - Reinforcement Learning: Module 9/practical_rl.md
+  - Module 10:
+      - Practicals:
+          - Reinforcement Learning and LLM: Module 10/practical_rl_llm.md
   - Module 12:
       - Practicals:
           - Music Transformer: Module 12/practical_music_transformer.md
