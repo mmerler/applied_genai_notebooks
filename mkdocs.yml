@@ -42,64 +42,64 @@ theme:
 nav:
   - Overview: index.md
   - Running Locally: running_locally.md
-  - Module 0:
-      - Class Activity:
-          - UV Package Manager Installation: Module 0/uv_installation.md
-          - FastAPI Installation: Module 0/fastapi_installation.md
-          - Docker Installation (Optional): Module 0/docker_installation.md
-          - Git Setup: Module 0/git_setup.md
-          - AWS Setup (Optional): Module 0/aws_cli_installation.md
   - Module 1:
-      - Practicals:
-          - 1 - Probability: Module 1/practical_1_probability.md
-          - 2 - Word Sampling: Module 1/practical_2_word_sampling.md
-          - 3 - Word Embeddings: Module 1/practical_3_word_embeddings.md
+      - Class Activity:
+          - UV Package Manager Installation: Module 1/uv_installation.md
+          - FastAPI Installation: Module 1/fastapi_installation.md
+          - Docker Installation (Optional): Module 1/docker_installation.md
+          - Git Setup: Module 1/git_setup.md
+          - AWS Setup (Optional): Module 1/aws_cli_installation.md
   - Module 2:
-      - Class Activity:
-          - First Project Setup: Module 2/gentext_project.md
-  - Module 3:
       - Practicals:
-          - 1 - FCNN: Module 3/practical_1_fcnn.md
-          - 2 - Convolutions: Module 3/practical_2_convolutions.md
-          - 3 - CNN: Module 3/practical_3_cnn.md
+          - 1 - Probability: Module 2/practical_1_probability.md
+          - 2 - Word Sampling: Module 2/practical_2_word_sampling.md
+          - 3 - Word Embeddings: Module 2/practical_3_word_embeddings.md
+  - Module 3:
       - Class Activity:
-          - Neural Network Helper Library Setup: Module 3/nn_code.md
+          - First Project Setup: Module 3/gentext_project.md
   - Module 4:
       - Practicals:
-          - VAE: Module 4/practical_vae.md
+          - 1 - FCNN: Module 4/practical_1_fcnn.md
+          - 2 - Convolutions: Module 4/practical_2_convolutions.md
+          - 3 - CNN: Module 4/practical_3_cnn.md
       - Class Activity:
-          - Adding VAE to Helper Library: Module 4/vae_code.md
+          - Neural Network Helper Library Setup: Module 4/nn_code.md
   - Module 5:
       - Practicals:
-          - 1 - GAN: Module 5/practical_1_gan.md
-          - 2 - RNN: Module 5/practical_2_rnn.md
+          - VAE: Module 5/practical_vae.md
       - Class Activity:
-          - Adding GAN to Helper Library: Module 5/gan_code.md
+          - Adding VAE to Helper Library: Module 5/vae_code.md
   - Module 6:
-      - Class Activity:
-          - Adding RNN to Text Generation API: Module 6/rnn_code.md
-  - Module 7:
       - Practicals:
-          - 1 - Energy-Based Methods: Module 7/practical_1_energy_based.md
-          - 2 - Diffusion Methods: Module 7/practical_2_diffusion.md
+          - 1 - GAN: Module 6/practical_1_gan.md
+          - 2 - RNN: Module 6/practical_2_rnn.md
       - Class Activity:
-          - Adding Diffusion to Helper Library: Module 7/diffusion_code.md
+          - Adding GAN to Helper Library: Module 6/gan_code.md
+  - Module 7:
+      - Class Activity:
+          - Adding RNN to Text Generation API: Module 7/rnn_code.md
   - Module 8:
       - Practicals:
-          - GPT: Module 8/practical_gpt.md
+          - 1 - Energy-Based Methods: Module 8/practical_1_energy_based.md
+          - 2 - Diffusion Methods: Module 8/practical_2_diffusion.md
       - Class Activity:
-          - Fine-tuning an LLM and adding to Text Generation API: Module 8/llm_code.md
+          - Adding Diffusion to Helper Library: Module 8/diffusion_code.md
   - Module 9:
       - Practicals:
-          - Reinforcement Learning: Module 9/practical_rl.md
+          - GPT: Module 9/practical_gpt.md
+      - Class Activity:
+          - Fine-tuning an LLM and adding to Text Generation API: Module 9/llm_code.md
   - Module 10:
       - Practicals:
-          - Reinforcement Learning and LLM: Module 10/practical_rl_llm.md
-  - Module 12:
+          - Reinforcement Learning: Module 10/practical_rl.md
+  - Module 11:
       - Practicals:
-          - Music Transformer: Module 12/practical_music_transformer.md
+          - Reinforcement Learning and LLM: Module 11/practical_rl_llm.md
+  - Module 13:
+      - Practicals:
+          - Music Transformer: Module 13/practical_music_transformer.md
       - Class Activity:
-          - Deploy a Stable Diffusion model to the API: Module 12/stable_diffusion.md
+          - Deploy a Stable Diffusion model to the API: Module 13/stable_diffusion.md
 
 extra_css:
   - stylesheets/custom.css

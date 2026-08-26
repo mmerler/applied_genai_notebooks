@@ -186,3 +186,8 @@ homeworks
 exports/_*.log
 # Artifacts produced by running notebook exports from notebooks/
 notebooks/generated_*.mid
+
+# Autograder: cloned student repos, grade reports, and roster stay local
+student_code/repos/
+student_code/results/
+student_code/students.csv

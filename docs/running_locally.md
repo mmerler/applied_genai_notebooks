@@ -42,15 +42,15 @@ This will install all packages needed to run the notebooks, including PyTorch wi
 To run a specific notebook:
 
 ```bash
-marimo edit notebooks/Module_1_Practical_1_Probability.py
+marimo edit notebooks/Module_2_Practical_1_Probability.py
 ```
 
-Or to run all Module 1 notebooks together:
+Or to run all Module 2 notebooks together:
 
 ```bash
-marimo edit notebooks/Module_1_Practical_1_Probability.py \
-            notebooks/Module_1_Practical_2_Word_Sampling.py \
-            notebooks/Module_1_Practical_3_Word_Embeddings.py
+marimo edit notebooks/Module_2_Practical_1_Probability.py \
+            notebooks/Module_2_Practical_2_Word_Sampling.py \
+            notebooks/Module_2_Practical_3_Word_Embeddings.py
 ```
 
 ### GPU Acceleration
@@ -61,7 +61,7 @@ PyTorch automatically detects and uses available GPU acceleration:
 - **Apple Silicon**: MPS (Metal Performance Shaders) support for M1/M2/M3 Macs
 - **CPU Fallback**: Runs on CPU if no GPU is detected
 
-You can verify GPU availability in the notebooks. For later modules with deep learning models (Modules 3+), GPU acceleration significantly improves training and inference speed.
+You can verify GPU availability in the notebooks. For later modules with deep learning models (Modules 4+), GPU acceleration significantly improves training and inference speed.
 
 #### Verifying GPU Support
 
@@ -99,7 +99,7 @@ uv sync --extra dev
 
 Some notebooks may require additional models or data:
 
-- **Module 1, Practical 3**: Requires spacy language model
+- **Module 2, Practical 3**: Requires spacy language model
   ```bash
   uv run python -m spacy download en_core_web_lg
   ```

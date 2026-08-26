@@ -1,6 +1,6 @@
 # AWS CLI Installation (Optional)
 
-**Note**: This installation is optional and only required if you plan to train or deploy your models on AWS cloud infrastructure in later modules (specifically Module 6 and beyond).
+**Note**: This installation is optional and only required if you plan to train or deploy your models on AWS cloud infrastructure in later modules (specifically Module 7 and beyond).
 
 ⚠️ **Cost Warning**: Using AWS services may incur charges. While AWS offers a free tier, ML training and deployment can exceed free limits. Monitor your usage and set up billing alerts. All coursework can be completed locally at no cost.
 
@@ -8,7 +8,7 @@
 
 ## When You'll Need This
 
-- **Module 6**: Optional AWS training and deployment of RNN models
+- **Module 7**: Optional AWS training and deployment of RNN models
 - **Future modules**: Cloud-based model training and production deployments
 - **Personal projects**: Deploying your own ML applications
 

@@ -1,9 +1,9 @@
-# Practical 2: Convolutions
+# Practical: Variational Autoencoders (VAE)
 
-This interactive marimo notebook explores convolutional operations and their applications in image processing.
+This interactive marimo notebook explores Variational Autoencoders for generative modeling and latent space representation.
 
 !!! note "Related Resources"
-    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_3_Practical_2_Convolutions.py) - See the source code
+    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_5_Practical_VAE.py) - See the source code
     - [Run Locally](../running_locally.md) - Instructions for running with GPU acceleration support
 
 !!! warning "Static preview — not interactive"
@@ -15,7 +15,7 @@ This interactive marimo notebook explores convolutional operations and their app
     - **Run locally** — `uv add marimo`, then `uv run marimo edit <notebook>.py`
     - **Copy code** or **Download** the notebook
 
-<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_3_Practical_2_Convolutions.html"
+<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_5_Practical_VAE.html"
         style="width: 100%; height: 1000px; border: 1px solid #ddd; border-radius: 4px;"
         sandbox="allow-scripts allow-same-origin">
 </iframe>

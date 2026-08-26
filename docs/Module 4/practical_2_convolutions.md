@@ -1,9 +1,9 @@
-# Practical: Reinforcement Learning
+# Practical 2: Convolutions
 
-This interactive marimo notebook explores reinforcement learning algorithms and their applications in decision-making and game playing.
+This interactive marimo notebook explores convolutional operations and their applications in image processing.
 
 !!! note "Related Resources"
-    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_9_Practical_ReinforcementLearning.py) - See the source code
+    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_4_Practical_2_Convolutions.py) - See the source code
     - [Run Locally](../running_locally.md) - Instructions for running with GPU acceleration support
 
 !!! warning "Static preview — not interactive"
@@ -15,7 +15,7 @@ This interactive marimo notebook explores reinforcement learning algorithms and 
     - **Run locally** — `uv add marimo`, then `uv run marimo edit <notebook>.py`
     - **Copy code** or **Download** the notebook
 
-<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_9_Practical_ReinforcementLearning.html"
+<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_4_Practical_2_Convolutions.html"
         style="width: 100%; height: 1000px; border: 1px solid #ddd; border-radius: 4px;"
         sandbox="allow-scripts allow-same-origin">
 </iframe>

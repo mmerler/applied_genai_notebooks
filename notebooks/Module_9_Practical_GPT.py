@@ -1,18 +1,21 @@
 import marimo
 
-__generated_with = "0.17.0"
+__generated_with = "0.23.9"
 app = marimo.App(width="medium")
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""# Module 8: Practical - Transformer Architecture""")
+    mo.md("""
+    # Module 8: Practical - Transformer Architecture
+    """)
     return
 
 
@@ -41,7 +44,9 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""We start with the same data preparation steps as in Module 5.""")
+    mo.md("""
+    We start with the same data preparation steps as in Module 5.
+    """)
     return
 
 
@@ -83,7 +88,9 @@ def _(re):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""Since we are training the model to predict the next word in a sequence, we will construct our training set features based on 30 word sequences from the text. The corresponding labels are the sequences shifted by one word.""")
+    mo.md("""
+    Since we are training the model to predict the next word in a sequence, we will construct our training set features based on 30 word sequences from the text. The corresponding labels are the sequences shifted by one word.
+    """)
     return
 
 
@@ -109,7 +116,9 @@ def _(DataLoader, Dataset, encoded, torch):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""Let's see what the first pair of input/output sequences look like.""")
+    mo.md("""
+    Let's see what the first pair of input/output sequences look like.
+    """)
     return
 
 
@@ -121,7 +130,9 @@ def _(train_loader):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""We now define the causal attention mask.  Recall that this mask simply zeroes out the attention weights for future tokens in the sequence. This is done to ensure that the model does not have access to future tokens when making predictions.""")
+    mo.md(r"""
+    We now define the causal attention mask.  Recall that this mask simply zeroes out the attention weights for future tokens in the sequence. This is done to ensure that the model does not have access to future tokens when making predictions.
+    """)
     return
 
 
@@ -147,7 +158,9 @@ def _(device, torch):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Recall that we also need to define a position embedding.  Here we will use a simple positional encoding corresponding to the embedding of the index of the token in the sequence.""")
+    mo.md(r"""
+    Recall that we also need to define a position embedding.  Here we will use a simple positional encoding corresponding to the embedding of the index of the token in the sequence.
+    """)
     return
 
 
@@ -164,12 +177,15 @@ def _(nn, torch):
             pos_embeddings = self.pos_emb(positions)
             token_embeddings = self.token_emb(x)
             return token_embeddings + pos_embeddings
+
     return (TokenAndPositionEmbedding,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Next we define the Transformer block, consisting of, in addition to the usual fully connected layers, also multi-head attention and layer normalization layers.""")
+    mo.md(r"""
+    Next we define the Transformer block, consisting of, in addition to the usual fully connected layers, also multi-head attention and layer normalization layers.
+    """)
     return
 
 
@@ -193,18 +209,20 @@ def _(causal_attention_mask, nn):
         def forward(self, x):
             batch_size, seq_len, _ = x.size()
             causal_mask = causal_attention_mask(seq_len, seq_len, x.device)
-            # causal_mask = causal_mask.unsqueeze(1)  # for broadcasting
             attn_output, attn_weights = self.attn(x, x, x, attn_mask=~causal_mask.bool())
             x = self.ln_1(x + self.dropout_1(attn_output))
             ffn_output = self.ffn(x)
             x = self.ln_2(x + ffn_output)
             return x, attn_weights
+
     return (TransformerBlock,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Finally, let's put it all together into a GPT (Generative Pre-trained Transformer) architecture and train the model using the dataloader defined earlier.""")
+    mo.md(r"""
+    Finally, let's put it all together into a GPT (Generative Pre-trained Transformer) architecture and train the model using the dataloader defined earlier.
+    """)
     return
 
 
@@ -223,6 +241,7 @@ def _(TokenAndPositionEmbedding, TransformerBlock, nn):
             x, attn_weights = self.transformer(x)
             logits = self.lm_head(x)
             return logits, attn_weights
+
     return (GPT,)
 
 
@@ -256,6 +275,7 @@ def _():
                             "avg loss": f"{total_loss/(batch_number+1):.4f}",
                         }
                     )            
+
     return (train_gpt,)
 
 
@@ -310,7 +330,9 @@ def _(
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""We can now use the trained GPT to generate text.  The model will generate a sequence of tokens based on the input prompt. We can use the inverse mapping from our vocabulary to "translate" the tokens to natural text.""")
+    mo.md(r"""
+    We can now use the trained GPT to generate text.  The model will generate a sequence of tokens based on the input prompt. We can use the inverse mapping from our vocabulary to "translate" the tokens to natural text.
+    """)
     return
 
 
@@ -354,6 +376,7 @@ def _(device, torch):
             generated_words = [self.index_to_word.get(idx, "<UNK>") for idx in generated_tokens]
             print("generated text:" + " ".join(generated_words))
             return info
+
     return (TextGenerator,)
 
 

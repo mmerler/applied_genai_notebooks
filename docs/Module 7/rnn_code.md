@@ -3,15 +3,15 @@
 !!! note "Related Marimo Notebook"
     This module builds upon concepts from the following interactive notebook:
 
-    - [Module 5 Practical 2: Recurrent Neural Networks (RNN)](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_5_Practical_2_RNN.py)
+    - [Module 6 Practical 2: Recurrent Neural Networks (RNN)](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_6_Practical_2_RNN.py)
 
-As part of this activity we will update the text generation API developed in Module 2 to use an RNN. You will incorporate appropriate code from Module5-RNN notebook into your FastAPI implementation. 
+As part of this activity we will update the text generation API developed in Module 3 to use an RNN. You will incorporate appropriate code from Module6-RNN notebook into your FastAPI implementation. 
 
 ---
 
 ## 1. Code Updates
 
-Most of the activity code from Module 2 can be reused, but you need to modify the following lines:
+Most of the activity code from Module 3 can be reused, but you need to modify the following lines:
 
 
 ```python
@@ -65,7 +65,7 @@ def parse_args():
     return parser.parse_args()
 
 def train_model(args):
-    # TODO: Implement training loop based on Module 6 RNN notebook
+    # TODO: Implement training loop based on Module 7 RNN notebook
     # 1. Load training data from args.data_dir
     # 2. Initialize RNN model (LSTM/GRU) 
     # 3. Set up loss function and optimizer

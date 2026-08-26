@@ -1,9 +1,9 @@
-# Practical 1: Generative Adversarial Networks (GAN)
+# Practical 2: Word Sampling
 
-This interactive marimo notebook covers building and training GANs for image generation.
+This interactive marimo notebook explores techniques for generating text based on probability distributions.
 
 !!! note "Related Resources"
-    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_5_Practical_1_GAN.py) - See the source code
+    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_2_Practical_2_Word_Sampling.py) - See the source code
     - [Run Locally](../running_locally.md) - Instructions for running with GPU acceleration support
 
 !!! warning "Static preview — not interactive"
@@ -15,7 +15,7 @@ This interactive marimo notebook covers building and training GANs for image gen
     - **Run locally** — `uv add marimo`, then `uv run marimo edit <notebook>.py`
     - **Copy code** or **Download** the notebook
 
-<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_5_Practical_1_GAN.html"
+<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_2_Practical_2_Word_Sampling.html"
         style="width: 100%; height: 1000px; border: 1px solid #ddd; border-radius: 4px;"
         sandbox="allow-scripts allow-same-origin">
 </iframe>

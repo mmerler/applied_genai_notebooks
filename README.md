@@ -4,29 +4,29 @@ These notebooks and activities cover fundamental concepts and practical implemen
 
 ## 📖 Acknowledgments
 
-Module 4-8 examples are adapted from:
+Module 5-9 examples are adapted from:
 
 **Foster, D. (2024).** *Generative Deep Learning: Teaching Machines to Paint, Write, Compose, and Play* (2nd ed.). O'Reilly Media.
 
 ## 📚 Course Modules
 
 ### Core Neural Network Foundations
-- **Module 3: Practical 1** - Fully Connected Neural Networks (with checkpoint system)
-- **Module 3: Practical 2** - Convolution Intuition  
-- **Module 3: Practical 3** - Convolutional Neural Networks
-- **Module 4: Practical** - Variational Autoencoders
-- **Module 5: Practical** - GAN (Generative Adversarial Networks)
-- **Module 6: Practical** - RNN (Recurrent Neural Networks)
-- **Module 6: Practical** - Normalizing Flows
+- **Module 4: Practical 1** - Fully Connected Neural Networks (with checkpoint system)
+- **Module 4: Practical 2** - Convolution Intuition  
+- **Module 4: Practical 3** - Convolutional Neural Networks
+- **Module 5: Practical** - Variational Autoencoders
+- **Module 6: Practical** - GAN (Generative Adversarial Networks)
+- **Module 7: Practical** - RNN (Recurrent Neural Networks)
+- **Module 7: Practical** - Normalizing Flows
 
 ### Advanced Generative Methods  
-- **Module 7: Practical 1** - Energy Based Methods
-- **Module 7: Practical 2** - Diffusion Methods 
-- **Module 8: Practical** - Transformer Architecture
+- **Module 8: Practical 1** - Energy Based Methods
+- **Module 8: Practical 2** - Diffusion Methods 
+- **Module 9: Practical** - Transformer Architecture
 
 ### Reinforcement Learning
-- **Module 9: Practical** - Basics of Reinforcement Learning
-- **Module 10: Practical** - Reinforcement Learning and LLM
+- **Module 10: Practical** - Basics of Reinforcement Learning
+- **Module 11: Practical** - Reinforcement Learning and LLM
 
 ## ✨ Key Features
 

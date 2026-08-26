@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.17.0"
+__generated_with = "0.23.9"
 app = marimo.App()
 
 
@@ -8,19 +8,21 @@ app = marimo.App()
 def _():
     import marimo as mo
     import numpy as np
+
     return mo, np
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""# Module 9: Practical - Basics of Reinforcement Learning""")
+    mo.md(r"""
+    # Module 9: Practical - Basics of Reinforcement Learning
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     In the year 2147, Earth’s surface has become a patchwork of unstable terrains after decades of climate decay.
     Our AI-controlled exploration unit — Bot-7 — is dispatched from its landing pod (🔵) to reach a high-priority extraction point (🏁).
 
@@ -35,8 +37,7 @@ def _(mo):
     Each grid cell represents one unit of terrain. Moving across terrain consumes energy — some more than others.
 
     *Source: ChatGPT 4o (prompt: shortest path algorithm story with a sci-fi theme)*
-    """
-    )
+    """)
     return
 
 
@@ -195,6 +196,7 @@ def _(mo):
             header = "| " + " | ".join([" " for i in range(len(self.grid[0]))]) + " |"
             # Insert header separator after first row
             return "\n".join([header, header_separator] + rows)
+
     return (GridGame,)
 
 
@@ -206,13 +208,17 @@ def _(GridGame):
 
 @app.cell(hide_code=True)
 def _(game, mo):
-    mo.md(f"""{game.print_grid()}""")
+    mo.md(f"""
+    {game.print_grid()}
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""If the terrain map is known, Bot-7 can compute the most energy-efficient route to the target using principles of **dynamic programming** — evaluating each cell's cumulative cost from goal to start and choosing the least expensive path. In particular, let's assign the following costs to going through each type of terrain: "🌱": 1, "🌊": 3, "⛰️": 5. Below is a solution to this problem using a very well known algorithm known as Dijkstra's Algorithm (feel free to look at the code if you are interested, but in reinforcement learning our goal will be to understand how to do this without knowing the map).""")
+    mo.md(r"""
+    If the terrain map is known, Bot-7 can compute the most energy-efficient route to the target using principles of **dynamic programming** — evaluating each cell's cumulative cost from goal to start and choosing the least expensive path. In particular, let's assign the following costs to going through each type of terrain: "🌱": 1, "🌊": 3, "⛰️": 5. Below is a solution to this problem using a very well known algorithm known as Dijkstra's Algorithm (feel free to look at the code if you are interested, but in reinforcement learning our goal will be to understand how to do this without knowing the map).
+    """)
     return
 
 
@@ -273,6 +279,7 @@ def _():
                     heapq.heappush(heap, (new_cost, neighbor, [neighbor] + path))
 
         return cost_to_goal, path_to_goal, costs
+
     return (dijkstra,)
 
 
@@ -286,19 +293,25 @@ def _(dijkstra, game):
 
 @app.cell(hide_code=True)
 def _(game, mo, trajectory):
-    mo.md(f"""{game.print_grid(trajectory)}""")
+    mo.md(f"""
+    {game.print_grid(trajectory)}
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""Dijkstra's algorithm (and more generally dynamic programming algorithms) rely on a simple intution, which will also be very useful to us later with RL.  From each cell in the grid there is a smallest cost path to the goal (not necessarily unique). The expected cost of this path is sometimes referred to as the **cost-to-go** of that state. Let's try to understand how to calculate the value function. Fill in the table below with what you think the cost of the optimal path will be (smallest total cost to the goal).""")
+    mo.md("""
+    Dijkstra's algorithm (and more generally dynamic programming algorithms) rely on a simple intution, which will also be very useful to us later with RL.  From each cell in the grid there is a smallest cost path to the goal (not necessarily unique). The expected cost of this path is sometimes referred to as the **cost-to-go** of that state. Let's try to understand how to calculate the value function. Fill in the table below with what you think the cost of the optimal path will be (smallest total cost to the goal).
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(costs, game, mo):
-    mo.md(f"""{game.print_values(costs, game.cost_input_grid, test=True)}""")
+    mo.md(f"""
+    {game.print_values(costs, game.cost_input_grid, test=True)}
+    """)
     return
 
 
@@ -311,14 +324,15 @@ def _(costs, game, mo):
 
 @app.cell(hide_code=True)
 def _(button, mo):
-    mo.md(f"""{button.value}""")
+    mo.md(f"""
+    {button.value}
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        """
+    mo.md("""
     Before we proceed further, we’ll make one important conceptual shift. From this point on, we will refer not to costs, but to rewards.
 
 
@@ -329,18 +343,16 @@ def _(mo):
     So when Bot-7 is faced with a grid of terrain, each movement will now yield a (negative) reward, representing energy loss. Its mission becomes one of **maximizing total reward**, which naturally leads to minimizing total energy use.
 
     This reward-based framing aligns with how most RL algorithms are formulated, and sets the stage for what comes next: value functions, policies, and learning through experience.
-    """
-    )
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        """
+    mo.md("""
     Let's now frame the problem as an RL problem and understand better the terms: **agent**, **environment**, **state**, **action**, **reward** as applied to this example.
 
-    The **agent** is simply our Bot-7 (or its decision making system). Its **state** is its position in our grid matrix and can be described with coordinates (i,j) representing the row and column of the position. The **actions** available to Bot-7 are moving up, down, left, or right (except when it is at the boundary, then only some of the actions are available). 
+    The **agent** is simply our Bot-7 (or its decision making system). Its **state** is its position in our grid matrix and can be described with coordinates (i,j) representing the row and column of the position. The **actions** available to Bot-7 are moving up, down, left, or right (except when it is at the boundary, then only some of the actions are available).
 
     The **environment** abstracts all the complexities of putting the agent in the next state based on its action decision. This could be the robot actuators, the effects of wind and anything else.  For this example we'll assume a deterministic environment that simply maps the current state and action to the next state:
 
@@ -359,22 +371,19 @@ def _(mo):
     - ⛰️: -5
 
     Recall that in RL the agent usually does not have access to the map and doesn't know in advance which cells will give which rewards. It will have to discover it by trying various actions in an efficient way.
-    """
-    )
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(game, mo):
-    mo.md(
-        f"""
+    mo.md(f"""
     For now, let's pretend again that we know what the map looks like:
 
     {game.print_grid()}
 
     The agent needs some way to make decisions based on the information it has. This is called a **policy**. Let's assume the agent's policy is to first move vertically to get to the same column as the goal and then move horizontally. Let's evaluate this policy to calculate the total amount of reward the agent would get.
-    """
-    )
+    """)
     return
 
 
@@ -424,6 +433,7 @@ def _(game):
         print(f"\nTotal reward: {total_reward}")
         print(f"Trajectory: {trajectory}")
         return trajectory
+
     return (evaluate_policy,)
 
 
@@ -441,14 +451,15 @@ def _(evaluate_policy, mo):
 
 @app.cell(hide_code=True)
 def _(game, mo, policy_eval_button):
-    mo.md(f"""{game.print_grid(policy_eval_button.value)}""")
+    mo.md(f"""
+    {game.print_grid(policy_eval_button.value)}
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     As we see, following different policies results in the different rewards at the end of the  **episode** (note how we use the terms rollout, trajectory, episode interchangeably). The goal in RL is to find optimal policies resulting in largest possible reward for the agent.
 
     While learning the algorithms for finding such policies is outside the scope of this course, most popular methods rely on using some function approximators (like neural networks) to either learn the **value** function or the policy directly.
@@ -456,8 +467,7 @@ def _(mo):
     Value functions are analogous to the optimal cost to the goal that we saw in the beginning of this notebook. Instead of giving the cost of the optimal path from each state, value functions give the total reward (or expected reward in the stochastic case) that the agent would gain by either following a specific policy (policy value function) or by following the optimal policy. To get more intution behind value functions we'll fill in the optimal value table analogous to the cost to the goal table.
 
     As you fill in this table refer to the slides and make sure you understand how these optimal values satisfy the Bellman Equation for the value function.
-    """
-    )
+    """)
     return
 
 
@@ -471,7 +481,9 @@ def _(costs):
 
 @app.cell(hide_code=True)
 def _(game, mo, rewards):
-    mo.md(f"""{game.print_values(rewards, game.value_input_grid, test=True)}""")
+    mo.md(f"""
+    {game.print_values(rewards, game.value_input_grid, test=True)}
+    """)
     return
 
 
@@ -484,27 +496,27 @@ def _(game, mo, rewards):
 
 @app.cell(hide_code=True)
 def _(mo, values_button):
-    mo.md(f"""{values_button.value}""")
+    mo.md(f"""
+    {values_button.value}
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        """
-    In control problems, where the goal is to come up with an optimal policy, a more useful function is the **q-function**, which is analogous to the value function, but keeps track of the total expected reward based on not only the current state, but also the current action. Some of the RL algorithms use function approximators like neural networks to **learn** the value/q function (remember that in real scenario you don't have a map so cannot do the calculation above) by trying or observing many episodes or alternating policy improvements and q-function approximations under current policy.  
+    mo.md("""
+    In control problems, where the goal is to come up with an optimal policy, a more useful function is the **q-function**, which is analogous to the value function, but keeps track of the total expected reward based on not only the current state, but also the current action. Some of the RL algorithms use function approximators like neural networks to **learn** the value/q function (remember that in real scenario you don't have a map so cannot do the calculation above) by trying or observing many episodes or alternating policy improvements and q-function approximations under current policy.
 
     Once you know the optimal value/q functions figuring out a policy is straight-forward, as the agent takes the action with the maximum expected reward (given by value/q functions). This is referred to as 'acting greedily' with respect to it.
 
-    Another common approach is to forego the intermediate step of learning the value function and instead learn directly the policy mapping $a(t) = \pi(s(t))$ from states to actions (this is particularly useful in the stochastic case when a neural network with a final softmax activation layer can give the probabilities of taking each action $a_i$ based on the current state $s(t)$, 
+    Another common approach is to forego the intermediate step of learning the value function and instead learn directly the policy mapping $a(t) = \pi(s(t))$ from states to actions (this is particularly useful in the stochastic case when a neural network with a final softmax activation layer can give the probabilities of taking each action $a_i$ based on the current state $s(t)$,
 
     $$
     \pi(a_i(t) | s(t)).
     $$
 
     We finish with an example of one such method. Understanding the details of this and other methods is outside the scope of this course, but feel free to explore and play around with it below.
-    """
-    )
+    """)
     return
 
 
@@ -582,6 +594,7 @@ def _(np):
 
         total_cost = sum(get_reward(x, y) for x, y in path[1:-1])
         return total_cost, path
+
     return (policy_gradient,)
 
 
@@ -595,7 +608,9 @@ def _(game, policy_gradient):
 
 @app.cell(hide_code=True)
 def _(game, mo, p_trajectory):
-    mo.md(f"""{game.print_grid(p_trajectory)}""")
+    mo.md(f"""
+    {game.print_grid(p_trajectory)}
+    """)
     return
 
 

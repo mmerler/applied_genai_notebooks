@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.21.1"
+__generated_with = "0.23.9"
 app = marimo.App(width="medium")
 
 
@@ -230,7 +230,7 @@ def _(mo):
 def _(torch):
     def generate_samples(nn_energy_model, inp_imgs, steps, step_size, noise_std):
         nn_energy_model.eval()
-    
+
         for _ in range(steps):
             # We add noise to the input images, but we will
             # need to calculate the gradients with the transformed
@@ -519,6 +519,11 @@ def _(device, generate_samples, nn_energy_model, plot_samples, torch):
     new_imgs = generate_samples(nn_energy_model, x, steps=256, step_size=10.0, noise_std=0.01)
 
     plot_samples(new_imgs, n=8)
+    return
+
+
+@app.cell
+def _():
     return
 
 

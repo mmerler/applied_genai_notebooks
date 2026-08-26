@@ -1,30 +1,31 @@
 import marimo
 
-__generated_with = "0.13.15"
+__generated_with = "0.23.9"
 app = marimo.App()
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     # Module 10 - Applying Reinforcement Learning to Language
 
     The goal of this activity is to build intuition on how Reinforcement Learning can modify the behavior of a language model. This is a very simplified toy example, but will help us understand how the RL concepts like **states** and **actions** translate to the world of text and what are some of the tradeoffs that need to be made when working with reinforcement learning.
-    """
-    )
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Let's first construct a simplified language model. Our model will have a set vocabulary size **vocab_size**, so for simplicity we'll use a subset of **vocab_size** words from the vocabulary of english words in the **nltk** library .""")
+    mo.md(r"""
+    Let's first construct a simplified language model. Our model will have a set vocabulary size **vocab_size**, so for simplicity we'll use a subset of **vocab_size** words from the vocabulary of english words in the **nltk** library .
+    """)
     return
 
 
@@ -77,13 +78,11 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
-    To simulate a language model generating text, we'll use a simple model that generates the next word starting with the last letter of the context. We will use a small one layer neural network that outputs probabilities for different words in the vocabulary and then choose the word with the highest probability that satisfies the word chain condition above. 
+    mo.md(r"""
+    To simulate a language model generating text, we'll use a simple model that generates the next word starting with the last letter of the context. We will use a small one layer neural network that outputs probabilities for different words in the vocabulary and then choose the word with the highest probability that satisfies the word chain condition above.
 
     To obtain a numeric tensor, we will use one-hot encoding to represent the context, where each word in the vocabulary is represented by a unique index.
-    """
-    )
+    """)
     return
 
 
@@ -138,7 +137,9 @@ def _(F, idx_to_word, nn, torch, vocab, vocab_size):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Feel free to expertiment with trying different context below:""")
+    mo.md(r"""
+    Feel free to expertiment with trying different context below:
+    """)
     return
 
 
@@ -159,27 +160,23 @@ def _(SimpleNet, generate_text_from_base_model, idx_to_word, vocab_size):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     This is the base model behavior. What happens if we want to modify it? Say we want to generate new text in such a way that the last word in the chain ends in the letter **m**.
 
     We could train a new model or fine-tune the existing model, but that would require many examples of this behavior. Can we make our text generation behave in the way we want by simply having it experiment on its own? All we would need would be some rules to tell it if it is doing a good job. This is a perfect setup for using Reinforcement Learning.
-    """
-    )
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     Let's put this problem in an RL setting of states, actions, and rewards. The **state** will be the current context of length **context_size**.
 
-    The **action** is simply choosing one of the words from the vocabulary.  
+    The **action** is simply choosing one of the words from the vocabulary.
 
     The **reward** is where things get interesting. The idea is to shape it in a way to get the behavior we want.
-    """
-    )
+    """)
     return
 
 
@@ -199,12 +196,15 @@ def _(is_valid_transition):
             reward -= 10
 
         return reward
+
     return (shaped_reward,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Finally, the **environment** will be represented by a class that holds the current state of the text generation process and provides methods to reset the state and step through the environment by taking an action (choosing a word). The environment also computes the reward based on the generated sequence.""")
+    mo.md(r"""
+    Finally, the **environment** will be represented by a class that holds the current state of the text generation process and provides methods to reset the state and step through the environment by taking an action (choosing a word). The environment also computes the reward based on the generated sequence.
+    """)
     return
 
 
@@ -233,6 +233,7 @@ def _(idx_to_word, random, shaped_reward, vocab, word_to_idx):
                 reward = shaped_reward(sequence)
 
             return new_context, reward, done
+
     return (Environment,)
 
 
@@ -250,15 +251,13 @@ def _(Environment, idx_to_word, word_to_idx):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     How should the agent choose the next action (next word)? Here is an example of a policy implementation based on the algorithm described and implemented in https://spinningup.openai.com/en/latest/spinningup/rl_intro3.html.
 
     The `get_action` function simply uses the neural network model to output the next action, as we did before. The details of the training algorithm below and the specific loss function used for RL is beyond the scope of the course, but note that it is a generic algorithm for RL, not specific for language modeling.
 
     Pay particular attention to the last several lines where the usual backpropogation to perform gradient descent with respect to this loss function is used to update the weights of the base neural network. In case you are interested in diving more into the theory, the code in this cell is copied with minimal modifications from above to make the comparison with the theory easier.
-    """
-    )
+    """)
     return
 
 
@@ -342,7 +341,9 @@ def _(env, generate_text_from_base_model, torch):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Next, let's train the model. Each epoch consists of `batch_size` of observations, where each episode is a sequence of actions taken by the agent in the environment until the end condition. The agent interacts with the environment, collects rewards, and updates its policy based on the rewards received.""")
+    mo.md(r"""
+    Next, let's train the model. Each epoch consists of `batch_size` of observations, where each episode is a sequence of actions taken by the agent in the environment until the end condition. The agent interacts with the environment, collects rewards, and updates its policy based on the rewards received.
+    """)
     return
 
 
@@ -386,6 +387,7 @@ def _(torch):
         plt.grid(True)
         plt.tight_layout()
         plt.show()
+
     return (plot_rewards,)
 
 
@@ -397,7 +399,9 @@ def _(plot_rewards, reward_history):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""The model is now trained and we can generate new text! Note, how our reward shape affected the generation. Feel free to experiment with increasing vocabulary size, maximum sequence length and the reward shape (e.g. can we reward the model for making longer or shorter chains or having some other interesting structure.)""")
+    mo.md("""
+    The model is now trained and we can generate new text! Note, how our reward shape affected the generation. Feel free to experiment with increasing vocabulary size, maximum sequence length and the reward shape (e.g. can we reward the model for making longer or shorter chains or having some other interesting structure.)
+    """)
     return
 
 
@@ -417,6 +421,7 @@ def _(env, idx_to_word):
                 batch_observations.append(idx_to_word[context[-1]])
                 if done:
                     return batch_observations
+
     return (generate_chain,)
 
 
@@ -427,6 +432,11 @@ def _(generate_chain, policy, random, vocab):
 
     chain = generate_chain(start_word, policy)
     print(" → ".join(chain))
+    return
+
+
+@app.cell
+def _():
     return
 
 

@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.21.1"
+__generated_with = "0.23.9"
 app = marimo.App(width="medium")
 
 
@@ -304,7 +304,6 @@ def _(F, nn, torch):
 
         def forward(self, x):
             residual = self.proj(x)
-            # x = self.norm(x)
             x = self.swish(self.conv1(x))
             x = self.conv2(x)
             return x + residual
@@ -374,7 +373,7 @@ def _(DownBlock, F, ResidualBlock, SinusoidalEmbedding, UpBlock, nn, torch):
             skips = []
             x = self.initial(noisy_images)
             noise_emb = self.embedding(noise_variances)  # shape: (B, 1, 1, 32)
-            # Upsample to match image size like TF reference
+            # Upsample to match image size 
             noise_emb = F.interpolate(noise_emb.permute(0, 3, 1, 2), size=(self.image_size, self.image_size), mode='nearest')
             x = torch.cat([x, noise_emb], dim=1)
 
@@ -443,13 +442,6 @@ def _(IMAGE_SIZE, nn, show_image, torch):
                 noise_rates, signal_rates = self.schedule_fn(t)
                 pred_noises, pred_images = self.denoise(current_images, noise_rates, signal_rates, training=False)
 
-                # Debug generation process
-                if step % max(1, diffusion_steps // 4) == 0:  # Print 4 times during generation
-                    print(f"Generation Step {step}/{diffusion_steps}: t={1-step*step_size:.3f}")
-                    print(f"  Current images std: {current_images.std().item():.4f}")
-                    print(f"  Pred images std: {pred_images.std().item():.4f}")
-                    print(f"  Signal rate: {signal_rates.mean().item():.4f}, Noise rate: {noise_rates.mean().item():.4f}")
-
                 next_diffusion_times = t - step_size
                 next_noise_rates, next_signal_rates = self.schedule_fn(next_diffusion_times)
                 current_images = next_signal_rates * pred_images + next_noise_rates * pred_noises
@@ -472,38 +464,9 @@ def _(IMAGE_SIZE, nn, show_image, torch):
             pred_noises, _ = self.denoise(noisy_images, noise_rates, signal_rates, training=True)
             loss = loss_fn(pred_noises, noises)
 
-            # Debug prints
-            if torch.rand(1).item() < 0.01:  # Print more frequently to see output
-                print(f"Debug - Loss: {loss.item():.4f}, Noise std: {noises.std().item():.4f}, Pred std: {pred_noises.std().item():.4f}")
-                print(f"Signal rates range: {signal_rates.min().item():.4f}-{signal_rates.max().item():.4f}")
-                print(f"Noise rates range: {noise_rates.min().item():.4f}-{noise_rates.max().item():.4f}")
-
             optimizer.zero_grad()
             loss.backward()
-
-            # # Check for gradient issues
-            # if torch.rand(1).item() < 0.01:
-            #     total_norm = 0
-            #     for p in self.network.parameters():
-            #         if p.grad is not None:
-            #             param_norm = p.grad.data.norm(2)
-            #             total_norm += param_norm.item() ** 2
-            #     total_norm = total_norm ** (1. / 2)
-            #     print(f"Gradient norm: {total_norm:.4f}")
-
             optimizer.step()
-
-            # with torch.no_grad():
-            #     # Debug EMA update occasionally
-            #     if torch.rand(1).item() < 0.001:
-            #         param_diff = 0
-            #         for ema_param, param in zip(self.ema_network.parameters(), self.network.parameters()):
-            #             param_diff += (ema_param - param).abs().mean().item()
-            #         print(f"EMA Update Debug - Avg param difference: {param_diff:.6f}")
-
-            #     for ema_param, param in zip(self.ema_network.parameters(), self.network.parameters()):
-            #         ema_param.copy_(self.ema_decay * ema_param + (1. - self.ema_decay) * param)
-
             return loss.item()
 
         def test_step(self, images, loss_fn):

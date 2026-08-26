@@ -1,9 +1,9 @@
-# Module 10 - Applying Reinforcement Learning to Language
+# Practical 2: Diffusion Methods
 
-This interactive marimo notebook builds intuition on how reinforcement learning can shape the behavior of a language model, walking through how RL concepts like states and actions translate to the world of text.
+This interactive marimo notebook explores diffusion models for image generation and denoising.
 
 !!! note "Related Resources"
-    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_10_ReinforcementLearningAndLLM.py) - See the source code
+    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_8_Practical_2_DiffusionMethods.py) - See the source code
     - [Run Locally](../running_locally.md) - Instructions for running with GPU acceleration support
 
 !!! warning "Static preview — not interactive"
@@ -15,7 +15,7 @@ This interactive marimo notebook builds intuition on how reinforcement learning 
     - **Run locally** — `uv add marimo`, then `uv run marimo edit <notebook>.py`
     - **Copy code** or **Download** the notebook
 
-<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_10_ReinforcementLearningAndLLM.html"
+<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_8_Practical_2_DiffusionMethods.html"
         style="width: 100%; height: 1000px; border: 1px solid #ddd; border-radius: 4px;"
         sandbox="allow-scripts allow-same-origin">
 </iframe>

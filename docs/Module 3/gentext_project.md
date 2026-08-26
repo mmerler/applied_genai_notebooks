@@ -9,8 +9,8 @@ This guide will help you set up a FastAPI project using UV Package Manager. Dock
 Before getting started, ensure you have the following installed:
 
 - **Python 3.7+**
-- **UV Package Manager**: If you haven't installed UV, follow the installation instructions [here](../Module 0/uv_installation.md)
-- **Docker (Optional)**: Only needed for containerization. Install from [here](../Module 0/docker_installation.md)
+- **UV Package Manager**: If you haven't installed UV, follow the installation instructions [here](../Module 1/uv_installation.md)
+- **Docker (Optional)**: Only needed for containerization. Install from [here](../Module 1/docker_installation.md)
 
 ---
 
@@ -18,7 +18,7 @@ Before getting started, ensure you have the following installed:
 
 ### 1. Navigate to Your Project Directory
 
-Navigate to your existing project directory (created in Module 0):
+Navigate to your existing project directory (created in Module 1):
 
 ```bash
 cd sps_genai
@@ -46,7 +46,7 @@ code bigram_model.py
 
 - `app/__init__.py`: This file (which can be left empty) marks the `app` directory as a Python *package*. When Python sees an `__init__.py` inside a directory, it treats that directory as an importable package, which is what allows statements like `from app.bigram_model import BigramModel` to work. Without it, Python may not recognize `app` as a package and the import would fail.
 
-- `app/bigram_model.py`: This file will contain the logic for processing bigrams. You are responsible for editing this file. Use are free to use LLM based code assistants such as GitHub Copilot to help you transform the notebook code from Module 1 and make it available for your API.
+- `app/bigram_model.py`: This file will contain the logic for processing bigrams. You are responsible for editing this file. Use are free to use LLM based code assistants such as GitHub Copilot to help you transform the notebook code from Module 2 and make it available for your API.
 
 - `main.py`: This is the entry point for your FastAPI application. It already exists in the **project root** (the `sps_genai` directory) since `uv init` created it there 
 

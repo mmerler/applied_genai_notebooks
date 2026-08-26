@@ -1,9 +1,9 @@
-# Practical: Variational Autoencoders (VAE)
+# Practical 1: Fully Connected Neural Networks
 
-This interactive marimo notebook explores Variational Autoencoders for generative modeling and latent space representation.
+This interactive marimo notebook covers building and training fully connected neural networks from scratch.
 
 !!! note "Related Resources"
-    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_4_Practical_VAE.py) - See the source code
+    - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_4_Practical_1_FCNN.py) - See the source code
     - [Run Locally](../running_locally.md) - Instructions for running with GPU acceleration support
 
 !!! warning "Static preview — not interactive"
@@ -15,7 +15,7 @@ This interactive marimo notebook explores Variational Autoencoders for generativ
     - **Run locally** — `uv add marimo`, then `uv run marimo edit <notebook>.py`
     - **Copy code** or **Download** the notebook
 
-<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_4_Practical_VAE.html"
+<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_4_Practical_1_FCNN.html"
         style="width: 100%; height: 1000px; border: 1px solid #ddd; border-radius: 4px;"
         sandbox="allow-scripts allow-same-origin">
 </iframe>

@@ -2,7 +2,7 @@
 
 This interactive marimo notebook covers building and training GANs for image generation.
 
-!!! note "Related Resources" - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_5_Practical_1_EnergyBasedMethods.py) - See the source code - [Run Locally](../running_locally.md) - Instructions for running with GPU acceleration support
+!!! note "Related Resources" - [View on GitHub](https://github.com/gurgentus/applied_genai_notebooks/blob/main/notebooks/Module_8_Practical_1_EnergyBasedMethods.py) - See the source code - [Run Locally](../running_locally.md) - Instructions for running with GPU acceleration support
 
 !!! warning "Static preview — not interactive"
 The notebook below is a static export, so its sliders, dropdowns, and
@@ -13,7 +13,7 @@ interactively, click **Run** or **Edit** in the notebook, then choose one of:
     - **Run locally** — `uv add marimo`, then `uv run marimo edit <notebook>.py`
     - **Copy code** or **Download** the notebook
 
-<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_7_Practical_1_EnergyBasedMethods.html"
+<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_8_Practical_1_EnergyBasedMethods.html"
         style="width: 100%; height: 1000px; border: 1px solid #ddd; border-radius: 4px;"
         sandbox="allow-scripts allow-same-origin">
 </iframe>
