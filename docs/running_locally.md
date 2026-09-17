@@ -13,7 +13,7 @@ To run the notebooks with the practicals locally with GPU acceleration support, 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/gurgentus/applied_genai_notebooks.git
+git clone https://github.com/mmerler/applied_genai_notebooks.git
 cd applied_genai_notebooks
 ```
 
