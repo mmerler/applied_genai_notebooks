@@ -1,10 +1,10 @@
 site_name: Applied Generative AI - Course Companion
 site_description: Lecture notes for Applied Generative AI course I developed and taught at Columbia University
-site_author: Greg Hayrapetyan
-site_url: https://gurgentus.github.io/applied_genai_notebooks/
+site_author: Michele Merler (original author: Greg Hayrapetyan)
+site_url: https://mimerler.github.io/applied_genai_notebooks/
 
-repo_name: gurgentus/applied_genai_notebooks
-repo_url: https://github.com/gurgentus/applied_genai_notebooks
+repo_name: mimerler/applied_genai_notebooks
+repo_url: https://github.com/mimerler/applied_genai_notebooks
 
 theme:
   name: material
