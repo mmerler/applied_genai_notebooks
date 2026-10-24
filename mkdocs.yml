@@ -76,6 +76,8 @@ nav:
       - Class Activity:
           - Adding GAN to Helper Library: Module 6/gan_code.md
   - Module 7:
+     - Practicals:
+          - Normalizing Flows: Module 7/practical_normalizing_flows.md
       - Class Activity:
           - Adding RNN to Text Generation API: Module 7/rnn_code.md
   - Module 8:
