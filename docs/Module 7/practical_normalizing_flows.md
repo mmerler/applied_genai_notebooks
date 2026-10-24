@@ -15,7 +15,7 @@ This interactive marimo notebook covers normalizing flows: the change of variabl
     - **Run locally** — `uv add marimo`, then `uv run marimo edit <notebook>.py`
     - **Copy code** or **Download** the notebook
 
-<iframe src="https://appliedgenainotebooks-production.up.railway.app/Module_7_Practical_Normalizing_Flows.html"
+<iframe src="../../exports/Module_7_Practical_Normalizing_Flows.html"
         style="width: 100%; height: 1000px; border: 1px solid #ddd; border-radius: 4px;"
         sandbox="allow-scripts allow-same-origin">
 </iframe>

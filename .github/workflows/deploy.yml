@@ -36,6 +36,11 @@ jobs:
       - name: Build MkDocs site
         run: uv run mkdocs build
 
+      - name: 📄 Copy executed notebook exports into the site
+        run: |
+          mkdir -p site/exports
+          cp exports/*.html site/exports/
+
       - name: 🛠️ Export notebooks
         run: |
           python scripts/build.py --output-dir site
