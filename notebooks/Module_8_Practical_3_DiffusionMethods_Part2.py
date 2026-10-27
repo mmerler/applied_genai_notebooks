@@ -66,10 +66,10 @@ def _(mo):
     3. train classifier-free guidance (CFG) with condition dropout;
     4. measure the speed–quality–control trade-off using matched initial noise.
 
-    > **Compute note:** the defaults train a small model for 5 epochs the first
-    > time the notebook runs, then save a checkpoint so later runs start
-    > instantly. This takes a few minutes on a GPU or Apple Silicon, and longer
-    > on a CPU. You can train more epochs with the button in Section 4.
+    > **Compute note:** the first time the notebook runs, it trains a small
+    > model (15 epochs on EuroSAT, about 10–15 minutes on Apple Silicon or a
+    > GPU, much longer on a CPU) and saves a checkpoint, so later runs start
+    > instantly. You can train more epochs with the button in Section 4.
     """)
     return
 
@@ -85,14 +85,22 @@ def _(mo):
     class** and **classes that look clearly different**, so that we can see
     whether guidance actually steers the model.
 
-    We therefore use **Fashion-MNIST**: 60,000 training images in 10 clothing
-    classes (6,000 per class), padded to $32 \times 32$. A small model learns
-    it in a few epochs, and every class is easy to recognize by eye, which
-    makes the sampler and guidance comparisons easy to judge.
+    We therefore use **EuroSAT** (Helber et al., 2019): 27,000 color
+    satellite images of $64 \times 64$ pixels from the Sentinel-2 mission, in
+    10 land-use classes such as *Forest*, *River*, *Highway*, *Residential*
+    and *SeaLake* (2,000–3,000 images per class). The classes have very
+    different colors and textures, so it is easy to see whether a sample
+    matches its class, and texture-like images are something diffusion
+    models learn quickly. EuroSAT has no official train/test split, so we
+    hold out a fixed random 10% of the images for validation.
 
-    To try color images, set `DATASET = "CIFAR10"` below (50,000 images, 10
-    classes). Expect blurrier samples: CIFAR-10 needs a larger model and many
-    more epochs to look good.
+    Two alternatives are built in; change `DATASET` below to try them:
+
+    - `"FashionMNIST"`: 60,000 grayscale clothing images, $32 \times 32$.
+      The cleanest results, after only 5 epochs.
+    - `"CIFAR10"`: 50,000 color photos (cars, cats, ships, ...), $32 \times 32$.
+      Familiar classes, but expect blurry samples: CIFAR-10 needs a larger
+      model and many more epochs to look good.
 
     The images are mapped from $[0,1]$ to $[-1,1]$, so the clean data and the
     Gaussian noise live on comparable scales.
@@ -103,8 +111,20 @@ def _(mo):
 @app.cell
 def _():
     # Experiment configuration. These are the main knobs to change in class.
-    DATASET = "FashionMNIST"  # or "CIFAR10"
-    IMAGE_SIZE = 32
+    DATASET = "CIFAR10"  # "EuroSAT", "FashionMNIST" or "CIFAR10"
+    DATASET_SETTINGS = {
+        # image size, epochs trained automatically on the first run,
+        # and three contrasting classes for the guidance sweep
+        "EuroSAT": {"image_size": 64, "auto_train_epochs": 15,
+                    "sweep_classes": ["Forest", "Residential", "SeaLake"]},
+        "FashionMNIST": {"image_size": 32, "auto_train_epochs": 5,
+                         "sweep_classes": ["T-shirt/top", "Sandal", "Ankle boot"]},
+        "CIFAR10": {"image_size": 32, "auto_train_epochs": 20,
+                    "sweep_classes": ["automobile", "cat", "ship"]},
+    }
+    IMAGE_SIZE = DATASET_SETTINGS[DATASET]["image_size"]
+    AUTO_TRAIN_EPOCHS = DATASET_SETTINGS[DATASET]["auto_train_epochs"]
+    SWEEP_CLASS_NAMES = DATASET_SETTINGS[DATASET]["sweep_classes"]
     BATCH_SIZE = 128
     DIFFUSION_STEPS = 1000
     BASE_CHANNELS = 32
@@ -112,7 +132,6 @@ def _():
     CONDITION_DROP_PROBABILITY = 0.10
     EMA_DECAY = 0.999
     LEARNING_RATE = 1e-3
-    AUTO_TRAIN_EPOCHS = 5  # trained automatically on the first run
     CHECKPOINT_PATH = f"checkpoints/module8_practical3_cfg_{DATASET.lower()}.pt"
     return (
         AUTO_TRAIN_EPOCHS,
@@ -125,6 +144,7 @@ def _():
         EMA_DECAY,
         IMAGE_SIZE,
         LEARNING_RATE,
+        SWEEP_CLASS_NAMES,
         TIME_DIM,
     )
 
@@ -151,8 +171,37 @@ def _(np, random, torch):
 
 
 @app.cell
-def _(DATASET, IMAGE_SIZE, torchvision, transforms):
-    if DATASET == "FashionMNIST":
+def _(DATASET, IMAGE_SIZE, torch, torchvision, transforms):
+    if DATASET == "EuroSAT":
+        # Satellite images have no "up": flips in both directions are valid augmentations
+        _train_transform = transforms.Compose(
+            [
+                transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomVerticalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ]
+        )
+        _test_transform = transforms.Compose(
+            [
+                transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ]
+        )
+        # Two views of the same images (with and without augmentation),
+        # split into the same fixed 90% / 10% partition
+        _full_train = torchvision.datasets.EuroSAT(root="./data", download=True, transform=_train_transform)
+        _full_test = torchvision.datasets.EuroSAT(root="./data", download=True, transform=_test_transform)
+        _order = torch.randperm(len(_full_train), generator=torch.Generator().manual_seed(0)).tolist()
+        _num_validation = len(_order) // 10
+        train_dataset = torch.utils.data.Subset(_full_train, _order[_num_validation:])
+        validation_dataset = torch.utils.data.Subset(_full_test, _order[:_num_validation])
+        CLASS_NAMES = list(_full_train.classes)
+        TRAIN_TARGETS = [_full_train.targets[_i] for _i in train_dataset.indices]
+        NUM_CHANNELS = 3
+    elif DATASET == "FashionMNIST":
         _padding = (IMAGE_SIZE - 28) // 2
         # No horizontal flips: shoes and bags all face the same way in Fashion-MNIST
         _train_transform = transforms.Compose(
@@ -184,15 +233,17 @@ def _(DATASET, IMAGE_SIZE, torchvision, transforms):
         _dataset_class = torchvision.datasets.CIFAR10
         NUM_CHANNELS = 3
     else:
-        raise ValueError("DATASET must be 'FashionMNIST' or 'CIFAR10'")
+        raise ValueError("DATASET must be 'EuroSAT', 'FashionMNIST' or 'CIFAR10'")
 
-    train_dataset = _dataset_class(
-        root="./data", train=True, download=True, transform=_train_transform
-    )
-    validation_dataset = _dataset_class(
-        root="./data", train=False, download=True, transform=_test_transform
-    )
-    CLASS_NAMES = list(train_dataset.classes)
+    if DATASET != "EuroSAT":
+        train_dataset = _dataset_class(
+            root="./data", train=True, download=True, transform=_train_transform
+        )
+        validation_dataset = _dataset_class(
+            root="./data", train=False, download=True, transform=_test_transform
+        )
+        CLASS_NAMES = list(train_dataset.classes)
+        TRAIN_TARGETS = [int(_t) for _t in train_dataset.targets]
     NUM_CLASSES = len(CLASS_NAMES)
     print(f"{DATASET}: {len(train_dataset):,} training and {len(validation_dataset):,} validation images")
     print("Classes:", CLASS_NAMES)
@@ -200,6 +251,7 @@ def _(DATASET, IMAGE_SIZE, torchvision, transforms):
         CLASS_NAMES,
         NUM_CHANNELS,
         NUM_CLASSES,
+        TRAIN_TARGETS,
         train_dataset,
         validation_dataset,
     )
@@ -227,11 +279,11 @@ def _(BATCH_SIZE, DataLoader, device, train_dataset, validation_dataset):
 
 
 @app.cell
-def _(CLASS_NAMES, make_grid, plt, train_dataset):
+def _(CLASS_NAMES, TRAIN_TARGETS, make_grid, plt, train_dataset):
     # One example of each class
     _examples = []
     for _class_index in range(len(CLASS_NAMES)):
-        _image_index = list(train_dataset.targets).index(_class_index)
+        _image_index = TRAIN_TARGETS.index(_class_index)
         _examples.append(train_dataset[_image_index][0])
     _preview = make_grid([(_x + 1) / 2 for _x in _examples], nrow=len(CLASS_NAMES), padding=2, pad_value=1)
     _figure, _axis = plt.subplots(figsize=(12, 2))
@@ -253,14 +305,11 @@ def _(mo):
     DDPM and DDIM use the **same training objective** and the same forward
     noising process. Let
 
-    $$\alpha_t = 1-\beta_t, \qquad
-      \bar\alpha_t = \prod_{s=1}^{t}\alpha_s.$$
+    $$\alpha_t = 1-\beta_t, \qquad \bar\alpha_t = \prod_{s=1}^{t}\alpha_s.$$
 
     A clean image can be moved directly to any noise level:
 
-    $$x_t = \sqrt{\bar\alpha_t}\,x_0
-      + \sqrt{1-\bar\alpha_t}\,\epsilon,
-      \qquad \epsilon\sim\mathcal N(0,I).$$
+    $$x_t = \sqrt{\bar\alpha_t}\,x_0 + \sqrt{1-\bar\alpha_t}\,\epsilon, \qquad \epsilon\sim\mathcal N(0,I).$$
 
     The network learns to predict the sampled noise with the standard
     $\ell_2$ objective:
@@ -391,9 +440,7 @@ def _(mo):
 
     At generation time, classifier-free guidance combines two predictions:
 
-    $$\hat\epsilon = \epsilon_\theta(x_t,t,\varnothing)
-      + w\left(\epsilon_\theta(x_t,t,y)
-      - \epsilon_\theta(x_t,t,\varnothing)\right).$$
+    $$\hat\epsilon = \epsilon_\theta(x_t,t,\varnothing) + w\left(\epsilon_\theta(x_t,t,y) - \epsilon_\theta(x_t,t,\varnothing)\right).$$
 
     - $w=0$: unconditional generation
     - $w=1$: ordinary conditional generation
@@ -606,9 +653,11 @@ def _(F, nn, os, q_sample, torch):
         training_network.train()
         losses = []
         step = start_step
+        # Asynchronous copies are only safe from pinned memory, which only CUDA uses
+        non_blocking = device.type == "cuda"
         for images, labels in loader:
-            images = images.to(device, non_blocking=True)
-            labels = labels.to(device, non_blocking=True)
+            images = images.to(device, non_blocking=non_blocking)
+            labels = labels.to(device, non_blocking=non_blocking)
             timesteps = torch.randint(
                 0, schedule.steps, (images.shape[0],), device=device
             )
@@ -620,6 +669,11 @@ def _(F, nn, os, q_sample, torch):
 
             predicted_noise = training_network(noisy_images, timesteps, training_labels)
             loss = F.mse_loss(predicted_noise, target_noise)
+            if not torch.isfinite(loss):
+                raise RuntimeError(
+                    f"The training loss became {loss.item()} at step {step + 1}. "
+                    "Nothing was saved. Try a lower LEARNING_RATE (e.g. 2e-4)."
+                )
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
             nn.utils.clip_grad_norm_(training_network.parameters(), max_norm=1.0)
@@ -685,11 +739,19 @@ def _(
     model,
     optimizer,
     os,
+    torch,
 ):
     # training_state is a mutable dictionary: the training cell below updates it
     # in place, so pressing "Train more" several times keeps counting epochs
     # and keeps the full loss history.
+    _checkpoint = None
     if os.path.exists(CHECKPOINT_PATH):
+        _checkpoint = torch.load(CHECKPOINT_PATH, map_location="cpu", weights_only=False)
+        _weights = list(_checkpoint["ema_model_state_dict"].values())
+        if not all(torch.isfinite(_w).all() for _w in _weights if _w.is_floating_point()):
+            print(f"Ignoring {CHECKPOINT_PATH}: it contains NaN or infinite weights.")
+            _checkpoint = None
+    if _checkpoint is not None:
         _checkpoint = load_checkpoint(
             CHECKPOINT_PATH, model, ema_model, optimizer, device
         )
@@ -1215,7 +1277,6 @@ def _(
     show_sample_grid,
     time,
     torch,
-    training_history,
 ):
     _benchmark_labels = torch.arange(NUM_CLASSES, device=device)
     _benchmark_generator = torch.Generator().manual_seed(123)
@@ -1305,16 +1366,16 @@ def _(mo):
 def _(
     CLASS_NAMES,
     IMAGE_SIZE,
+    SWEEP_CLASS_NAMES,
     ddim_sample,
     device,
     ema_model,
     schedule,
     show_sample_grid,
     torch,
-    training_history,
 ):
     _sweep_scales = [0.0, 1.0, 3.0, 5.0, 7.5]
-    _sweep_classes = [0, len(CLASS_NAMES) // 2, len(CLASS_NAMES) - 1]
+    _sweep_classes = [CLASS_NAMES.index(_name) for _name in SWEEP_CLASS_NAMES if _name in CLASS_NAMES] or [0, 1, 2]
     _seeds_per_class = 2
     _sweep_generator = torch.Generator().manual_seed(999)
     _rows = []
@@ -1379,8 +1440,8 @@ def _(mo):
     - Change what the network predicts: train it to predict the clean image
       $x_0$, or the velocity $v = \sqrt{\bar\alpha_t}\,\epsilon - \sqrt{1-\bar\alpha_t}\,x_0$,
       instead of the noise. What changes in the two samplers?
-    - Switch to `DATASET = "CIFAR10"`. How many epochs does it take before the
-      classes become recognizable?
+    - Switch to `DATASET = "FashionMNIST"` or `"CIFAR10"`. Which dataset gives
+      recognizable classes after the fewest epochs, and why?
     - Add KID or FID over at least 1,000 samples and report uncertainty across
       three random seeds.
 

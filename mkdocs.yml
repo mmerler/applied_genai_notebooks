@@ -84,6 +84,7 @@ nav:
       - Practicals:
           - 1 - Energy-Based Methods: Module 8/practical_1_energy_based.md
           - 2 - Diffusion Methods: Module 8/practical_2_diffusion.md
+          - 3 - Diffusion Methods, Part 2: Module 8/practical_3_diffusion_part2.md
       - Class Activity:
           - Adding Diffusion to Helper Library: Module 8/diffusion_code.md
   - Module 9:
