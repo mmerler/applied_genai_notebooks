@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    # Module 7: Practical 1 - Energy Based Methods
+    # Module 8: Practical 1 - Energy Based Methods
     """)
     return
 

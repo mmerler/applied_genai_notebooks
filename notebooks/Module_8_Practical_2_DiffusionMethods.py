@@ -29,7 +29,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    # Module 7: Practical 2 - Diffusion Methods
+    # Module 8: Practical 2 - Diffusion Methods
     """)
     return
 

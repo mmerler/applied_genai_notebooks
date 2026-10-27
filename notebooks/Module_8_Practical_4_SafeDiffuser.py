@@ -37,7 +37,7 @@ def _(torch):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Module 7: Practical 3 - Safe Planning with Diffusion (SafeDiffuser)
+    # Module 8: Practical 4 - Safe Planning with Diffusion (SafeDiffuser)
 
     In the previous practical we trained a diffusion model to **generate images**. Diffusion
     models are also powerful **planners**: instead of pixels, the model generates a whole
