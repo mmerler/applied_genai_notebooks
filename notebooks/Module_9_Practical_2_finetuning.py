@@ -99,7 +99,7 @@ def _(mo):
 
 @app.cell
 def _():
-    QUICK_RUN = True  # True: tiny subsets for a fast end-to-end check
+    QUICK_RUN = False  # True: tiny subsets for a fast end-to-end check
 
     FULL_FT_MODEL_ID = "openai-community/gpt2"  # 124M parameters, full fine-tuning
     LORA_MODEL_ID = "Qwen/Qwen2.5-1.5B"  # 1.5B-parameter base model, LoRA fine-tuning
@@ -524,7 +524,7 @@ def _(
     full_losses = train_causal_lm(
         full_model, full_train, full_collate, lr=FULL_LR, epochs=EPOCHS, batch_size=FULL_BATCH_SIZE, desc="GPT-2 full FT"
     )
-    full_model.save_pretrained("gpt2-squad")  # ~500 MB: a complete copy of the model
+    full_model.save_pretrained("./checkpoints/gpt2-squad")  # ~500 MB: a complete copy of the model
     return full_losses, full_model, full_trainable
 
 
@@ -619,7 +619,7 @@ def _(
         grad_accum=LORA_GRAD_ACCUM,
         desc="LoRA",
     )
-    lora_model.save_pretrained("qwen-squad-lora")  # saves only the adapter weights
+    lora_model.save_pretrained("./checkpoints/qwen-squad-lora")  # saves only the adapter weights
     return lora_collate, lora_losses
 
 
