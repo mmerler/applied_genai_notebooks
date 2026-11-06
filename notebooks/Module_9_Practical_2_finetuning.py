@@ -99,7 +99,7 @@ def _(mo):
 
 @app.cell
 def _():
-    QUICK_RUN = False  # True: tiny subsets for a fast end-to-end check
+    QUICK_RUN = True  # True: tiny subsets for a fast end-to-end check
 
     FULL_FT_MODEL_ID = "openai-community/gpt2"  # 124M parameters, full fine-tuning
     LORA_MODEL_ID = "Qwen/Qwen2.5-1.5B"  # 1.5B-parameter base model, LoRA fine-tuning
