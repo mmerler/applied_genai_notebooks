@@ -89,7 +89,8 @@ nav:
           - Adding Diffusion to Helper Library: Module 8/diffusion_code.md
   - Module 9:
       - Practicals:
-          - GPT: Module 9/practical_gpt.md
+          - 1 - GPT: Module 9/practical_gpt.md
+          - 2 - Fine-Tuning an LLM: Module 9/practical_2_finetuning.md
       - Class Activity:
           - Fine-tuning an LLM and adding to Text Generation API: Module 9/llm_code.md
   - Module 10:

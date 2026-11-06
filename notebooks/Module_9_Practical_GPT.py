@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    # Module 8: Practical - Transformer Architecture
+    # Module 9: Practical - Transformer Architecture
     """)
     return
 
@@ -39,7 +39,7 @@ def _():
     )
 
     print(f"Using device: {device}")
-    return DataLoader, Dataset, device, nn, re, torch
+    return DataLoader, Dataset, device, nn, np, plt, re, torch
 
 
 @app.cell(hide_code=True)
@@ -90,6 +90,8 @@ def _(re):
 def _(mo):
     mo.md("""
     Since we are training the model to predict the next word in a sequence, we will construct our training set features based on 30 word sequences from the text. The corresponding labels are the sequences shifted by one word.
+
+    We also hold out the last 10% of the text as a **validation set**. It is a contiguous block, so no validation window overlaps with a training window. We will use it to measure the model's **perplexity** on text it has never seen.
     """)
     return
 
@@ -109,9 +111,14 @@ def _(DataLoader, Dataset, encoded, torch):
             return (torch.tensor(self.data[idx:idx+SEQ_LEN]),
                     torch.tensor(self.data[idx+1:idx+SEQ_LEN+1]))
 
-    train_datasets = TextDataset(encoded)
+    # Hold out the last 10% of the text for validation
+    split = int(0.9 * len(encoded))
+    train_datasets = TextDataset(encoded[:split])
+    val_datasets = TextDataset(encoded[split:])
     train_loader = DataLoader(train_datasets, batch_size=64, shuffle=True)
-    return (train_loader,)
+    val_loader = DataLoader(val_datasets, batch_size=64, shuffle=False)
+    print(f"{len(train_datasets):,} training windows, {len(val_datasets):,} validation windows")
+    return train_loader, val_loader
 
 
 @app.cell(hide_code=True)
@@ -152,7 +159,7 @@ def _(device, torch):
 
     # Example usage:
     mask = causal_attention_mask(10, 10, device)
-    print(mask[2].T)
+    print(mask[2])
     return (causal_attention_mask,)
 
 
@@ -246,11 +253,27 @@ def _(TokenAndPositionEmbedding, TransformerBlock, nn):
 
 
 @app.cell
-def _():
+def _(torch):
     from tqdm import tqdm
 
-    def train_gpt(model, dataloader, optimizer, criterion, epochs, device):
+    def evaluate_gpt(model, dataloader, criterion, device):
+        """Average next-token cross-entropy (in nats) over a dataloader."""
+        model.eval()
+        total_loss, n_examples = 0.0, 0
+        with torch.no_grad():
+            for inputs, targets in dataloader:
+                inputs, targets = inputs.to(device), targets.to(device)
+                logits, _ = model(inputs)
+                loss = criterion(logits.view(-1, logits.size(-1)), targets.view(-1))
+                total_loss += loss.item() * inputs.size(0)
+                n_examples += inputs.size(0)
+        model.train()
+        return total_loss / n_examples
+
+    def train_gpt(model, dataloader, val_loader, optimizer, criterion, epochs, device):
         model.to(device)
+        # Validation loss of the untrained model (epoch 0), then once per epoch
+        history = {"train_loss": [], "val_loss": [evaluate_gpt(model, val_loader, criterion, device)]}
         model.train()
 
         for epoch in range(epochs):
@@ -274,7 +297,14 @@ def _():
                         {
                             "avg loss": f"{total_loss/(batch_number+1):.4f}",
                         }
-                    )            
+                    )
+
+            history["train_loss"].append(total_loss / len(dataloader))
+            history["val_loss"].append(evaluate_gpt(model, val_loader, criterion, device))
+            print(f"Epoch {epoch+1}: train loss {history['train_loss'][-1]:.3f}, "
+                  f"val loss {history['val_loss'][-1]:.3f}, "
+                  f"val perplexity {torch.exp(torch.tensor(history['val_loss'][-1])).item():.1f}")
+        return history
 
     return (train_gpt,)
 
@@ -295,11 +325,13 @@ def _():
     # Training
     BATCH_SIZE = 32
     EPOCHS = 10
-    LEARNING_RATE = 3e-4
+    LEARNING_RATE = 3e-3
     return (
         EMBEDDING_DIM,
+        EPOCHS,
         FEED_FORWARD_DIM,
         KEY_DIM,
+        LEARNING_RATE,
         MAX_LEN,
         N_HEADS,
         VOCAB_SIZE,
@@ -309,9 +341,11 @@ def _():
 @app.cell
 def _(
     EMBEDDING_DIM,
+    EPOCHS,
     FEED_FORWARD_DIM,
     GPT,
     KEY_DIM,
+    LEARNING_RATE,
     MAX_LEN,
     N_HEADS,
     VOCAB_SIZE,
@@ -320,12 +354,55 @@ def _(
     torch,
     train_gpt,
     train_loader,
+    val_loader,
 ):
     model = GPT(MAX_LEN, VOCAB_SIZE, EMBEDDING_DIM, N_HEADS, KEY_DIM, FEED_FORWARD_DIM)
-    criterion = nn.CrossEntropyLoss() 
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-    train_gpt(model, train_loader, optimizer, criterion, epochs=10, device=device)
-    return (model,)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    history = train_gpt(model, train_loader, val_loader, optimizer, criterion, epochs=EPOCHS, device=device)
+    return history, model
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Perplexity
+
+    The cross-entropy loss is the average negative log-probability the model assigns to the correct next word. **Perplexity** is its exponential:
+
+    $$\mathrm{PPL} = \exp\Big(-\frac{1}{N}\sum_{t=1}^{N}\log p(x_t \mid x_{<t})\Big)$$
+
+    A perplexity of $k$ means the model is, on average, as uncertain as if it were choosing uniformly among $k$ words. A model that ignores the context and guesses uniformly has perplexity equal to the vocabulary size (10,000 here, dashed line).
+
+    Things to look for in the plot:
+
+    - **Epoch 0** is the untrained model: its perplexity is close to (or above) the vocabulary size.
+    - The **validation** curve is the honest one: it is measured on text the model never trained on.
+    - When training perplexity keeps falling but validation perplexity stalls or rises, the model is **overfitting**.
+    - The training curve is averaged during the epoch with dropout on, so it is only an approximation.
+    """)
+    return
+
+
+@app.cell
+def _(VOCAB_SIZE, history, np, plt):
+    _train_ppl = np.exp(history["train_loss"])
+    _val_ppl = np.exp(history["val_loss"])
+
+    _fig, _ax = plt.subplots(figsize=(7, 4))
+    _ax.plot(range(1, len(_train_ppl) + 1), _train_ppl, marker="o", label="train")
+    _ax.plot(range(0, len(_val_ppl)), _val_ppl, marker="o", label="validation")
+    _ax.axhline(VOCAB_SIZE, linestyle="--", color="gray", label=f"uniform guess (vocabulary size, {VOCAB_SIZE:,})")
+    _ax.set_yscale("log")
+    _ax.set_xlabel("epoch")
+    _ax.set_ylabel("perplexity (log scale)")
+    _ax.set_title("Perplexity = exp(cross-entropy loss)")
+    _ax.grid(alpha=0.3, which="both")
+    _ax.legend()
+    print(f"Validation perplexity: {_val_ppl[0]:,.0f} before training, {_val_ppl[-1]:,.1f} after training "
+          f"(best {_val_ppl.min():,.1f} at epoch {int(_val_ppl.argmin())})")
+    _fig
+    return
 
 
 @app.cell(hide_code=True)
@@ -343,7 +420,7 @@ def _(device, torch):
             self.model = model
             self.model.to(device)
             self.index_to_word = index_to_word
-            self.word_to_index = {word: idx for idx, word in enumerate(index_to_word)}
+            self.word_to_index = {word: idx for idx, word in index_to_word.items()}
 
         def sample_from(self, probs, temperature):
             probs[1] = 0  # Mask out UNK token (index 1) to prevent generating <UNK>
@@ -360,7 +437,8 @@ def _(device, torch):
             with torch.no_grad():
                 while len(generated_tokens) < max_tokens:
                     x = torch.tensor([generated_tokens], dtype=torch.long)
-                    x = x.to(device)
+                    # Keep only the most recent tokens: the position embedding has max_len slots
+                    x = x[:, -self.model.embed.pos_emb.num_embeddings:].to(device)
                     logits, attn_weights = self.model(x)
                     last_logits = logits[0, -1] # .cpu().numpy()
                     sample_token, probs = self.sample_from(last_logits, temperature)
