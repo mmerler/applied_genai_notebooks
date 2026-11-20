@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Module 10 - Applying Reinforcement Learning to Language
+    # Module 11: Practical 1 - Applying Reinforcement Learning to Language
 
     The goal of this activity is to build intuition on how Reinforcement Learning can modify the behavior of a language model. This is a very simplified toy example, but will help us understand how the RL concepts like **states** and **actions** translate to the world of text and what are some of the tradeoffs that need to be made when working with reinforcement learning.
     """)

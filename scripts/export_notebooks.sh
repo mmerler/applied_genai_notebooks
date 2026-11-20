@@ -19,6 +19,18 @@ TIMEOUT="${EXPORT_TIMEOUT:-12000}"          # seconds per notebook
 SKIP_FILE="scripts/export-skip.txt"
 
 mkdir -p "$OUT"; touch "$MANIFEST"
+
+# One export at a time: two runs share the log and the output files, and a run
+# that fails deletes the HTML (see below), so it can remove another run's good export.
+LOCK="$OUT/.export.lock"
+if ! mkdir "$LOCK" 2>/dev/null; then
+  echo "Another export is running (lock: $LOCK, started by PID $(cat "$LOCK/pid" 2>/dev/null || echo '?'))."
+  echo "If it is not, remove the lock with: rm -rf $LOCK"
+  exit 1
+fi
+echo $$ > "$LOCK/pid"
+trap 'rm -rf "$LOCK"' EXIT
+
 LOG="$OUT/_export.log"; : > "$LOG"
 
 if   command -v gtimeout >/dev/null 2>&1; then TO=gtimeout
