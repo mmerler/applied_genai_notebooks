@@ -15,7 +15,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Module 9: Practical - Basics of Reinforcement Learning
+    # Module 10: Practical - Basics of Reinforcement Learning
     """)
     return
 
